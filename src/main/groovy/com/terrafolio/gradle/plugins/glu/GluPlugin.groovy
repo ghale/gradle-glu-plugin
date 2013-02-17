@@ -12,11 +12,25 @@ class GluPlugin implements Plugin<Project> {
 	}
 	
 	def void applyTasks(Project project) {
-		
+		project.task('generateFabrics', type: GluGenerateFabricsTask)
 	}
 	
 	def void applyConventions(Project project) {
-		project.convention.plugins.glu = new GluConfigurationConvention()
+		def fabrics = project.container(Fabric) { name ->
+			new Fabric(name)
+		}
+		
+		def servers = project.container(GluServer) { name ->
+			new GluServer(name)
+		}
+		
+		def applications = project.container(Application) { name ->
+			new Application(name)
+		}
+		
+		def glu = new GluConfiguration(fabrics, servers, applications)
+		
+		project.convention.plugins.glu = new GluConfigurationConvention(glu)
 	}
 
 }
