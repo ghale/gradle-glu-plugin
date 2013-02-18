@@ -14,8 +14,9 @@ class LoadModelCommand implements Command {
 	public boolean execute(Context context) throws Exception {
 		def service = context.get(Constants.SERVICE)
 		def fabricName = context.get(Constants.FABRIC)
+		def logger = context.get(Constants.LOGGER)
 		service.loadModel(fabricName, fabric)
-		return false
+		return Constants.SUCCESS
 	}
 
 }

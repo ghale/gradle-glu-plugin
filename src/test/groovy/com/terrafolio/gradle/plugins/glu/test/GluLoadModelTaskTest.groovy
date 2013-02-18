@@ -82,7 +82,7 @@ class GluLoadModelTaskTest {
 						assert context.get(Constants.FABRIC) == 'test'
 						assert context.get(Constants.LOGGER) == project.logger
 						assert commands.size == 1
-						return false
+						return Constants.SUCCESS
 					}
 				}	
 			}

@@ -83,7 +83,7 @@ class GluExecutionTaskTest {
 						assert commands[0].action == [ planAction: 'deploy' ]
 						assert commands[0].tags == [ 'step001' ]
 						assert commands[0].order == 'parallel'
-						return false
+						return Constants.SUCCESS
 					}
 				}
 			}
@@ -119,7 +119,7 @@ class GluExecutionTaskTest {
 						assert commands[0].action == [ planAction: 'redeploy' ]
 						assert commands[0].tags == [ 'step001' ]
 						assert commands[0].order == 'parallel'
-						return false
+						return Constants.SUCCESS
 					}
 				}
 			}
@@ -155,7 +155,7 @@ class GluExecutionTaskTest {
 						assert commands[0].action == [ planAction: 'undeploy' ]
 						assert commands[0].tags == [ 'step001' ]
 						assert commands[0].order == 'parallel'
-						return false
+						return Constants.SUCCESS
 					}
 				}
 			}
@@ -191,7 +191,7 @@ class GluExecutionTaskTest {
 						assert commands[0].action == [ planAction: 'start' ]
 						assert commands[0].tags == [ 'step001' ]
 						assert commands[0].order == 'parallel'
-						return false
+						return Constants.SUCCESS
 					}
 				}
 			}
@@ -227,7 +227,7 @@ class GluExecutionTaskTest {
 						assert commands[0].action == [ planAction: 'stop' ]
 						assert commands[0].tags == [ 'step001' ]
 						assert commands[0].order == 'parallel'
-						return false
+						return Constants.SUCCESS
 					}
 				}
 			}
@@ -263,7 +263,7 @@ class GluExecutionTaskTest {
 						assert commands[0].action == [ planAction: 'bounce' ]
 						assert commands[0].tags == [ 'step001' ]
 						assert commands[0].order == 'parallel'
-						return false
+						return Constants.SUCCESS
 					}
 				}
 			}
@@ -294,7 +294,7 @@ class GluExecutionTaskTest {
 					@Override
 					public boolean execute(Context context) throws Exception {
 						assert commands[0].order == 'sequential'
-						return false
+						return Constants.SUCCESS
 					}
 				}
 			}
@@ -326,7 +326,7 @@ class GluExecutionTaskTest {
 					@Override
 					public boolean execute(Context context) throws Exception {
 						assert commands[0].order == 'sequential'
-						return false
+						return Constants.SUCCESS
 					}
 				}
 			}
@@ -368,7 +368,7 @@ class GluExecutionTaskTest {
 						assert commands[1].tags == [ 'step002' ]
 						assert commands[1].order == 'parallel'
 						
-						return false
+						return Constants.SUCCESS
 					}
 				}
 			}
@@ -399,7 +399,7 @@ class GluExecutionTaskTest {
 					
 					@Override
 					public boolean execute(Context context) throws Exception {
-						return true
+						return Constants.FAILURE
 					}
 				}
 			}
@@ -429,7 +429,7 @@ class GluExecutionTaskTest {
 					
 					@Override
 					public boolean execute(Context context) throws Exception {
-						return false
+						return Constants.SUCCESS
 					}
 				}
 			}

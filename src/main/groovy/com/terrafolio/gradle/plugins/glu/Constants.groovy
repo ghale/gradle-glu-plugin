@@ -6,7 +6,10 @@ class Constants {
 	def final static FABRIC = 'FABRIC'
 	def final static LOGGER = 'LOGGER'
 	
-	def final static RUNNING = 'RUNNING'
-	def final static COMPLETED = 'COMPLETED'
-	def final static FAILED = 'FAILED'
+	def final static STATUS_RUNNING = 'RUNNING'
+	def final static STATUS_COMPLETED = 'COMPLETED'
+	def final static STATUS_FAILED = 'FAILED'
+	
+	def final static SUCCESS = false
+	def final static FAILURE = true
 }

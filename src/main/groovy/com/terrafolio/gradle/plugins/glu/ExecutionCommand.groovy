@@ -34,7 +34,7 @@ class ExecutionCommand implements Command {
 				lastCompleted = deploymentStatus.completedSteps
 			}
 			
-			if (deploymentStatus.status == Constants.RUNNING) {
+			if (deploymentStatus.status == Constants.STATUS_RUNNING) {
 				this.sleep(pollInterval)
 			} else {
 				break
@@ -44,7 +44,11 @@ class ExecutionCommand implements Command {
 		context.put(Constants.STATUS, executionDocument)
 		
 		logStatus(logger, executionDocument)
-		return deploymentStatus.status != Constants.COMPLETED
+		if (deploymentStatus.status == Constants.STATUS_COMPLETED) { 
+			return Constants.SUCCESS
+		} else {
+			return Constants.FAILURE
+		}
  	}
 	
 	def logStatus(logger, executionDocument) {
