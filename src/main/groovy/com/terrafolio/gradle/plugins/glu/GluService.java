@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 public interface GluService {
-	public void loadModel(String fabricName, Map fabric) throws GluServiceException;
+	public void loadModel(String fabricName, Map<String,String> fabric) throws GluServiceException;
 	
-	public String createPlan(String fabricName, List tags, Map action, String order) throws GluServiceException;
+	public String createPlan(String fabricName, List<String> tags, Map<String,String> action, String order) throws GluServiceException;
 	
 	public String executePlan(String fabricName, String planId) throws GluServiceException;
 	

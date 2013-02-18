@@ -44,7 +44,7 @@ class Fabric {
 					newMap[key] = value
 				} else { 
 					if (value instanceof List) {
-							newMap[key] += value
+						newMap[key] += value
 					} else if (value instanceof Map) {
 						newMap[key] = mergeMaps(newMap[key], value)
 					} else {

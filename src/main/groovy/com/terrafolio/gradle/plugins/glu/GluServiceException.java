@@ -1,5 +1,6 @@
 package com.terrafolio.gradle.plugins.glu;
 
+@SuppressWarnings("serial")
 public class GluServiceException extends Exception {
 
 	public GluServiceException() { }
