@@ -8,16 +8,15 @@ import org.apache.commons.chain.impl.ContextBase
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
-class GluExecutionTask extends DefaultTask {
-	def fabric
+class GluExecutionTask extends GluAbstractTask {
 	def order = 'parallel'
 	def executionTime = 0
 	def Chain executionChain = ExecutionChainFactory.getExecutionChain()
 	
-	@TaskAction
-	def void executeDeployment() {
+	@Override
+	def doExecute() {
 		def Context context = new ContextBase()
-		context.put(Constants.SERVICE, new GluRESTServiceImpl(fabric.server.url, fabric.server.username, fabric.server.password))
+		context.put(Constants.SERVICE, getService())
 		context.put(Constants.FABRIC, fabric.name)
 		context.put(Constants.LOGGER, project.logger)
 		

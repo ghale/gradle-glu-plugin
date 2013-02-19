@@ -9,7 +9,7 @@ class ExecutionCommand implements Command {
 	def action
 	def tags
 	def order
-	def pollInterval = 15000
+	def pollInterval = 5000
 
 	public ExecutionCommand(Map action, List tags, order) {
 		this.action = action
@@ -23,7 +23,15 @@ class ExecutionCommand implements Command {
 		def fabricName = context.get(Constants.FABRIC)
 		def logger = context.get(Constants.LOGGER)
 		
+		logger.warn("Creating plan for ${fabricName} with tags=${tags}, action=${action}, and order=${order}")
 		def planId = service.createPlan(fabricName, tags, action, order)
+		
+		if (planId == null) {
+			logger.warn('No changes found for deployment')
+			return Constants.SUCCESS
+		}
+		
+		logger.warn("Executing plan ${planId} for ${fabricName}")
 		def executionId = service.executePlan(fabricName, planId)
 		def DeploymentStatus deploymentStatus = null
 		def lastCompleted = 0
@@ -40,6 +48,8 @@ class ExecutionCommand implements Command {
 				break
 			}
 		}
+		
+		
 		def executionDocument = service.getExecutionStatus(fabricName, planId, executionId)
 		context.put(Constants.STATUS, executionDocument)
 		
@@ -54,6 +64,7 @@ class ExecutionCommand implements Command {
 	def logStatus(logger, executionDocument) {
 		String msg = ""
 		executionDocument.children().each { execution ->
+			msg += executionDocument.@name.text()
 			msg += nodeToString('', execution)
 			execution.sequential.each { mountpoint ->
 				msg += nodeToString('', mountpoint)

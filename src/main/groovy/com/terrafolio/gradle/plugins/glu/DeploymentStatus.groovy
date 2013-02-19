@@ -12,12 +12,14 @@ class DeploymentStatus {
 	public DeploymentStatus() {	}
 	
 	public DeploymentStatus(Map map) {
-		this.status = map['X-glu-status']
-		this.startTime = map['X-glu-startTime']
-		this.endTime = map['X-glu-endTime']
-		this.completedSteps = map['X-glu-completedSteps']
-		this.totalSteps = map['X-glu-totalSteps']
-		this.username = map['X-glu-username']
-		this.description = map['X-glu-description']
+		this.status = map.get('X-glu-status', 'UNKNOWN')
+		this.startTime = map.get('X-glu-startTime', null)
+		this.endTime = map.get('X-glu-endTime', null)
+		this.completedSteps = map.get('X-glu-completedSteps', '0')
+		this.totalSteps = map.get('X-glu-totalSteps', '???')
+		this.username = map.get('X-glu-username', 'UNKNOWN')
+		this.description = map.get('X-glu-description', 'No description')
 	}
+	
+
 }

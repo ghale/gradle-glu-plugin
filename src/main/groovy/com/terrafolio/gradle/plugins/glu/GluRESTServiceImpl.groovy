@@ -29,17 +29,22 @@ class GluRESTServiceImpl implements GluService {
 		
 		return client
 	}
+	
+	@Override
+	public String getTargetServer() {
+		return url
+	}
 
 	@Override
 	public void loadModel(String fabricName, Map fabric) throws GluServiceException {
 		try {
 			getRestClient().request(Method.POST, ContentType.JSON) { request ->
-				uri.path = '/model/static'
+				uri.path = 'model/static'
 				body = fabric
 				
-				response.success = { resp, json ->
+				//response.success = { resp, json ->
 					// Nothing to do if successful
-				}
+				//}
 			}
 		} catch (Exception e) {
 			throw new GluServiceException("Glu Service Call Failed", e)
@@ -53,9 +58,11 @@ class GluRESTServiceImpl implements GluService {
 		def planId = null
 		try {
 			getRestClient().request(Method.POST) { request ->
-				uri.path = '/plans'
+				uri.path = 'plans'
 				requestContentType = ContentType.URLENC
-				body = [ systemFilter: 'tags.hasAll(' + tags.join(';') + ')', order: order ] + action
+				
+				
+				body = [ systemFilter: 'tags.hasAll(\'' + tags.join(';') + '\')', order: order ] + action
 				
 				response.success = { resp, body ->
 					planId = body
@@ -77,7 +84,7 @@ class GluRESTServiceImpl implements GluService {
 		def executionId = null
 		try {
 			getRestClient().request(Method.POST) { request ->
-				uri.path = "/plan/${planId}/execution"
+				uri.path = "plan/${planId}/execution"
 				response.success = { resp, body ->
 					executionId = body
 				}
@@ -93,7 +100,7 @@ class GluRESTServiceImpl implements GluService {
 		def status = null
 		try {
 			getRestClient().request(Method.HEAD) { request ->
-				uri.path = "/deployment/current/${executionId}"
+				uri.path = "deployment/current/${executionId}"
 				response.success = { resp, body ->
 					status = new DeploymentStatus(resp.headers.inject([:]) {map, header -> map << [ (header.name): header.value ] })
 				}
@@ -110,7 +117,7 @@ class GluRESTServiceImpl implements GluService {
 		def status = null
 		try {
 			getRestClient().request(Method.GET) { request ->
-				uri.path = "/plan/${planId}/execution/${executionId}"
+				uri.path = "plan/${planId}/execution/${executionId}"
 				response.success = { resp, body ->
 					status = body
 				}

@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 public interface GluService {
+	public String getTargetServer();
+	
 	public void loadModel(String fabricName, Map<String,String> fabric) throws GluServiceException;
 	
 	public String createPlan(String fabricName, List<String> tags, Map<String,String> action, String order) throws GluServiceException;

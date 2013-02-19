@@ -12,6 +12,7 @@ import com.terrafolio.gradle.plugins.glu.ExecutionCommand
 import com.terrafolio.gradle.plugins.glu.GluRESTServiceImpl
 import com.terrafolio.gradle.plugins.glu.LoadModelCommand
 import com.terrafolio.gradle.plugins.glu.Constants
+import org.gradle.api.logging.Logging
 
 class LoadModelCommandTest {
 	def MockRESTServiceImpl
@@ -32,10 +33,14 @@ class LoadModelCommandTest {
 			}
 		}
 		
+		MockRESTServiceImpl.ignore('getTargetServer')
+		
+		
 		MockRESTServiceImpl.use {
 			def context = new ContextBase()
 			context.put(Constants.SERVICE, new GluRESTServiceImpl('http://glu', 'testuser', 'testpass'))
 			context.put(Constants.FABRIC, fabricName)
+			context.put(Constants.LOGGER, Logging.getLogger(this.class))
 			def command = new LoadModelCommand(fabric)
 			command.execute(context)
 		}

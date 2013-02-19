@@ -62,8 +62,8 @@ class GluRESTServiceImplTest {
 				HttpResponseDecorator response = new HttpResponseDecorator(baseResponse, null)
 				
 				assert configDelegate.body == fabric
-				assert configDelegate.uri.path == '/model/static'
-				configDelegate.response.success.call(response, null)
+				assert configDelegate.uri.path == 'model/static'
+				//configDelegate.response.success.call(response, null)
 			}
 		}
 		
@@ -125,9 +125,9 @@ class GluRESTServiceImplTest {
 				HttpResponseDecorator response = new HttpResponseDecorator(baseResponse, "8283e25e-f68d-4bbd-8a71-5149f23466ec")
 				response.setHeader("Location", "http://localhost:8080/console/rest/v1/glu-dev-1/plan/" + planId)
 				
-				assert configDelegate.uri.path == '/plans'
+				assert configDelegate.uri.path == 'plans'
 				assert configDelegate.requestContentType == ContentType.URLENC
-				assert configDelegate.body == [ systemFilter: 'tags.hasAll(' + tags.join(';') + ')', planAction: 'deploy', order: 'parallel' ]
+				assert configDelegate.body == [ systemFilter: 'tags.hasAll(\'' + tags.join(';') + '\')', planAction: 'deploy', order: 'parallel' ]
 				configDelegate.response.success.call(response, planId)
 			}
 		}
@@ -160,9 +160,9 @@ class GluRESTServiceImplTest {
 				HttpResponse baseResponse = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, 204, "OK"))
 				HttpResponseDecorator response = new HttpResponseDecorator(baseResponse, null)
 				
-				assert configDelegate.uri.path == '/plans'
+				assert configDelegate.uri.path == 'plans'
 				assert configDelegate.requestContentType == ContentType.URLENC
-				assert configDelegate.body == [ systemFilter: 'tags.hasAll(' + tags.join(';') + ')', planAction: 'deploy', order: 'parallel' ]
+				assert configDelegate.body == [ systemFilter: 'tags.hasAll(\'' + tags.join(';') + '\')', planAction: 'deploy', order: 'parallel' ]
 				configDelegate.response.'204'.call(response, null)
 			}
 		}
@@ -225,7 +225,7 @@ class GluRESTServiceImplTest {
 				HttpResponseDecorator response = new HttpResponseDecorator(baseResponse, "9")
 				response.setHeader("Location", "http://localhost:8080/console/rest/v1/glu-dev-1/plan/${planId}/execution/${executionId}")
 				
-				assert configDelegate.uri.path == "/plan/${planId}/execution"
+				assert configDelegate.uri.path == "plan/${planId}/execution"
 				configDelegate.response.success.call(response, executionId)
 			}
 		}
@@ -300,7 +300,7 @@ class GluRESTServiceImplTest {
 				response.setHeader("X-glu-totalSteps", totalSteps)
 				
 				assert method == Method.HEAD
-				assert configDelegate.uri.path == "/deployment/current/${executionId}"
+				assert configDelegate.uri.path == "deployment/current/${executionId}"
 				configDelegate.response.success.call(response, null)
 			}
 		}
@@ -384,7 +384,7 @@ class GluRESTServiceImplTest {
 				HttpResponseDecorator response = new HttpResponseDecorator(baseResponse, executionDocument)
 				
 				assert method == Method.GET
-				assert configDelegate.uri.path == "/plan/${planId}/execution/${executionId}"
+				assert configDelegate.uri.path == "plan/${planId}/execution/${executionId}"
 				configDelegate.response.success.call(response, new XmlSlurper().parseText(executionDocument))
 			}
 		}

@@ -4,20 +4,18 @@ import static org.junit.Assert.*
 import groovy.mock.interceptor.MockFor
 import groovy.xml.StreamingMarkupBuilder
 
-import org.apache.commons.chain.Context
 import org.apache.commons.chain.impl.ContextBase
 import org.custommonkey.xmlunit.Diff
 import org.custommonkey.xmlunit.XMLUnit
-import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
 import org.gradle.api.logging.Logging.LoggerImpl
 import org.junit.Before
 import org.junit.Test
 
-import com.terrafolio.gradle.plugins.glu.ExecutionCommand
-import com.terrafolio.gradle.plugins.glu.DeploymentStatus
-import com.terrafolio.gradle.plugins.glu.GluRESTServiceImpl
 import com.terrafolio.gradle.plugins.glu.Constants
+import com.terrafolio.gradle.plugins.glu.DeploymentStatus
+import com.terrafolio.gradle.plugins.glu.ExecutionCommand
+import com.terrafolio.gradle.plugins.glu.GluRESTServiceImpl
 
 class ExecutionCommandTest {
 	def MockRESTServiceImpl
@@ -37,7 +35,7 @@ class ExecutionCommandTest {
 		def executionDocument = """\
 <?xml version="1.0"?>
 <plan fabric="glu-dev-1" systemId="afb580a022b3f0e79e54bb6f888bf151ea3b16fc" id="10c8ce36-5e97-4a56-9785-d560c0eb5732" name="Deploy - Fabric [glu-dev-1] - PARALLEL">
-  <parallel name="Deploy - Fabric [glu-dev-1] - PARALLEL" startTime="2013-02-12 16:51:45 -0500" endTime="2013-02-12 16:52:04 -0500" status="COMPLETED">
+  <parallel startTime="2013-02-12 16:51:45 -0500" endTime="2013-02-12 16:52:04 -0500" status="COMPLETED">
     <sequential agent="agent-1" mountPoint="/sample/i001" startTime="2013-02-12 16:51:45 -0500" endTime="2013-02-12 16:52:04 -0500" status="COMPLETED">
       <leaf agent="agent-1" fabric="glu-dev-1" mountPoint="/sample/i001" name="Run [start] phase for [/sample/i001] on [agent-1]" scriptAction="start" toState="running" startTime="2013-02-12 16:51:45 -0500" endTime="2013-02-12 16:52:04 -0500" status="COMPLETED" />
     </sequential>
@@ -131,7 +129,7 @@ class ExecutionCommandTest {
 		def executionDocument = """\
 <?xml version="1.0"?>
 <plan fabric="glu-dev-1" systemId="afb580a022b3f0e79e54bb6f888bf151ea3b16fc" id="10c8ce36-5e97-4a56-9785-d560c0eb5732" name="Deploy - Fabric [glu-dev-1] - PARALLEL">
-  <parallel name="Deploy - Fabric [glu-dev-1] - PARALLEL" startTime="2013-02-12 16:51:45 -0500" endTime="2013-02-12 16:52:04 -0500" status="COMPLETED">
+  <parallel startTime="2013-02-12 16:51:45 -0500" endTime="2013-02-12 16:52:04 -0500" status="COMPLETED">
     <sequential agent="agent-1" mountPoint="/sample/i001" startTime="2013-02-12 16:51:45 -0500" endTime="2013-02-12 16:52:04 -0500" status="COMPLETED">
       <leaf agent="agent-1" fabric="glu-dev-1" mountPoint="/sample/i001" name="Run [start] phase for [/sample/i001] on [agent-1]" scriptAction="start" toState="running" startTime="2013-02-12 16:51:45 -0500" endTime="2013-02-12 16:52:04 -0500" status="COMPLETED" />
     </sequential>
@@ -201,6 +199,14 @@ class ExecutionCommandTest {
 		def mockLogger = new MockFor(LoggerImpl.class)
 		mockLogger.demand.with {
 			warn() { String message ->
+				assert message == 'Creating plan for test with tags=[tag1, tag2], action=[planAction:deploy], and order=parallel'
+			}
+			
+			warn() { String message ->
+				assert message == 'Executing plan 8283e25e-f68d-4bbd-8a71-5149f23466ec for test'
+			}
+			
+			warn() { String message ->
 				assert message == '5 of 10 steps completed...'
 			}
 			
@@ -220,6 +226,9 @@ Deploy - Fabric [glu-dev-1] - PARALLEL: COMPLETED in 19s
 """
 			}
 		}
+		
+		mockLogger.ignore('info')
+		mockLogger.ignore('debug')
 		
 		mockLogger.use {
 		MockRESTServiceImpl.use {
@@ -250,7 +259,7 @@ Deploy - Fabric [glu-dev-1] - PARALLEL: COMPLETED in 19s
 		def executionDocument = """\
 <?xml version="1.0"?>
 <plan fabric="glu-dev-1" systemId="afb580a022b3f0e79e54bb6f888bf151ea3b16fc" id="10c8ce36-5e97-4a56-9785-d560c0eb5732" name="Deploy - Fabric [glu-dev-1] - PARALLEL">
-  <parallel name="Deploy - Fabric [glu-dev-1] - PARALLEL" startTime="2013-02-12 16:51:45 -0500" endTime="2013-02-12 16:52:04 -0500" status="FAILED">
+  <parallel startTime="2013-02-12 16:51:45 -0500" endTime="2013-02-12 16:52:04 -0500" status="FAILED">
     <sequential agent="agent-1" mountPoint="/sample/i001" startTime="2013-02-12 16:51:45 -0500" endTime="2013-02-12 16:52:04 -0500" status="COMPLETED">
       <leaf agent="agent-1" fabric="glu-dev-1" mountPoint="/sample/i001" name="Run [start] phase for [/sample/i001] on [agent-1]" scriptAction="start" toState="running" startTime="2013-02-12 16:51:45 -0500" endTime="2013-02-12 16:52:04 -0500" status="COMPLETED" />
     </sequential>
@@ -331,6 +340,50 @@ Deploy - Fabric [glu-dev-1] - PARALLEL: COMPLETED in 19s
 			XMLUnit.setIgnoreWhitespace(true)
 			def xmlDiff = new Diff(executionDocument, result.toString())
 			assert xmlDiff.similar()
+		}
+	}
+	
+	@Test
+	def void deploy_handlesDeploymentWithNoChanges() {
+		def fabricName = 'test'
+		def tags = [ 'tag1', 'tag2' ]
+		def order = 'parallel'
+		
+		
+		MockRESTServiceImpl.demand.with {
+			createPlan() { String _fabricName, List _tags, Map _action, String _order ->
+				assert _fabricName == fabricName
+				assert _tags == tags
+				assert _action == [ planAction: 'deploy' ]
+				assert _order == order
+				return null
+			}
+		}
+		
+		def mockLogger = new MockFor(LoggerImpl.class)
+		mockLogger.demand.with {
+			warn() { String message ->
+				assert message == 'Creating plan for test with tags=[tag1, tag2], action=[planAction:deploy], and order=parallel'
+			}
+			
+			warn() { String message ->
+				assert message == 'No changes found for deployment'
+			}
+		}
+		
+		mockLogger.ignore('info')
+		mockLogger.ignore('debug')
+		
+		mockLogger.use {
+		MockRESTServiceImpl.use {
+			def context = new ContextBase()
+			context.put(Constants.SERVICE, new GluRESTServiceImpl('http://glu', 'testuser', 'testpass'))
+			context.put(Constants.FABRIC, fabricName)
+			context.put(Constants.LOGGER, Logging.getLogger(this.class))
+			def command = new ExecutionCommand([ planAction: 'deploy' ], tags, order)
+			command.pollInterval = 10
+			assert ! command.execute(context)
+		}
 		}
 	}
 }

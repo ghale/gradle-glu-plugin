@@ -15,6 +15,7 @@ class LoadModelCommand implements Command {
 		def service = context.get(Constants.SERVICE)
 		def fabricName = context.get(Constants.FABRIC)
 		def logger = context.get(Constants.LOGGER)
+		logger.info("Deploying model to the ${fabricName} fabric on ${service.targetServer}")
 		service.loadModel(fabricName, fabric)
 		return Constants.SUCCESS
 	}
