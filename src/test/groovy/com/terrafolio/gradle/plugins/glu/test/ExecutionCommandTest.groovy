@@ -203,7 +203,7 @@ class ExecutionCommandTest {
 			}
 			
 			warn() { String message ->
-				assert message == 'Executing plan 8283e25e-f68d-4bbd-8a71-5149f23466ec for test'
+				assert message == 'Executing plan 8283e25e-f68d-4bbd-8a71-5149f23466ec in test'
 			}
 			
 			warn() { String message ->
@@ -367,7 +367,7 @@ Deploy - Fabric [glu-dev-1] - PARALLEL: COMPLETED in 19s
 			}
 			
 			warn() { String message ->
-				assert message == 'No changes found for deployment'
+				assert message == 'Either there are no changes to deploy or the filters did not match any servers'
 			}
 		}
 		

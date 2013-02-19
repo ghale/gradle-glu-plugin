@@ -27,11 +27,11 @@ class ExecutionCommand implements Command {
 		def planId = service.createPlan(fabricName, tags, action, order)
 		
 		if (planId == null) {
-			logger.warn('No changes found for deployment')
+			logger.warn('Either there are no changes to deploy or the filters did not match any servers')
 			return Constants.SUCCESS
 		}
 		
-		logger.warn("Executing plan ${planId} for ${fabricName}")
+		logger.warn("Executing plan ${planId} in ${fabricName}")
 		def executionId = service.executePlan(fabricName, planId)
 		def DeploymentStatus deploymentStatus = null
 		def lastCompleted = 0
