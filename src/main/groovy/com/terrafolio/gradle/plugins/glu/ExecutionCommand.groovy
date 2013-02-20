@@ -22,6 +22,7 @@ class ExecutionCommand implements Command {
 		def service = context.get(Constants.SERVICE)
 		def fabricName = context.get(Constants.FABRIC)
 		def logger = context.get(Constants.LOGGER)
+		def console_url = context.get(Constants.CONSOLE_URL)
 		
 		logger.warn("Creating plan for ${fabricName} with tags=${tags}, action=${action}, and order=${order}")
 		def planId = service.createPlan(fabricName, tags, action, order)
@@ -33,6 +34,7 @@ class ExecutionCommand implements Command {
 		
 		logger.warn("Executing plan ${planId} in ${fabricName}")
 		def executionId = service.executePlan(fabricName, planId)
+		logger.warn("Status can be monitored at: ${console_url}/plan/deployments/${executionId}")
 		def DeploymentStatus deploymentStatus = null
 		def lastCompleted = 0
 		while (true) {

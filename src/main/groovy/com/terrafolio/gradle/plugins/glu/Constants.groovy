@@ -5,6 +5,7 @@ class Constants {
 	def final static STATUS = 'STATUS'
 	def final static FABRIC = 'FABRIC'
 	def final static LOGGER = 'LOGGER'
+	def final static CONSOLE_URL = 'CONSOLE_URL'
 	
 	def final static STATUS_RUNNING = 'RUNNING'
 	def final static STATUS_COMPLETED = 'COMPLETED'

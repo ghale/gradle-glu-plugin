@@ -19,6 +19,7 @@ class GluExecutionTask extends GluAbstractTask {
 		context.put(Constants.SERVICE, getService())
 		context.put(Constants.FABRIC, fabric.name)
 		context.put(Constants.LOGGER, project.logger)
+		context.put(Constants.CONSOLE_URL, fabric.server.url)
 		
 		if (executionTime > 0) {
 			sleepUntil(executionTime)

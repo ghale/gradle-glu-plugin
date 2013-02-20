@@ -102,6 +102,7 @@ class ExecutionCommandTest {
 			}
 		}
 		
+		mockRESTServiceImpl.ignore('getUrl')
 		MockRESTServiceImpl.use {
 			def context = new ContextBase()
 			context.put(Constants.SERVICE, new GluRESTServiceImpl('http://glu', 'testuser', 'testpass'))
@@ -122,6 +123,7 @@ class ExecutionCommandTest {
 	@Test
 	def void execute_logsMessages() {
 		def fabricName = 'test'
+		def mockUrl = 'http://test/console'
 		def tags = [ 'tag1', 'tag2' ]
 		def order = 'parallel'
 		def planId = '8283e25e-f68d-4bbd-8a71-5149f23466ec'
@@ -199,11 +201,15 @@ class ExecutionCommandTest {
 		def mockLogger = new MockFor(LoggerImpl.class)
 		mockLogger.demand.with {
 			warn() { String message ->
-				assert message == 'Creating plan for test with tags=[tag1, tag2], action=[planAction:deploy], and order=parallel'
+				assert message == "Creating plan for test with tags=${tags}, action=[planAction:deploy], and order=${order}"
 			}
 			
 			warn() { String message ->
-				assert message == 'Executing plan 8283e25e-f68d-4bbd-8a71-5149f23466ec in test'
+				assert message == "Executing plan ${planId} in test"
+			}
+			
+			warn() { String message ->
+				assert message == "Status can be monitored at: ${mockUrl}/plan/deployments/${executionId}"
 			}
 			
 			warn() { String message ->
@@ -236,6 +242,8 @@ Deploy - Fabric [glu-dev-1] - PARALLEL: COMPLETED in 19s
 			context.put(Constants.SERVICE, new GluRESTServiceImpl('http://glu', 'testuser', 'testpass'))
 			context.put(Constants.FABRIC, fabricName)
 			context.put(Constants.LOGGER, Logging.getLogger(this.class))
+			context.put(Constants.CONSOLE_URL, mockUrl)
+			
 			def command = new ExecutionCommand([ planAction: 'deploy' ], tags, order)
 			command.pollInterval = 10
 			assert ! command.execute(context)
@@ -326,6 +334,7 @@ Deploy - Fabric [glu-dev-1] - PARALLEL: COMPLETED in 19s
 			}
 		}
 		
+		mockRESTServiceImpl.ignore('getUrl')
 		MockRESTServiceImpl.use {
 			def context = new ContextBase()
 			context.put(Constants.SERVICE, new GluRESTServiceImpl('http://glu', 'testuser', 'testpass'))
