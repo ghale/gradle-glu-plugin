@@ -5,6 +5,9 @@ import groovy.json.JsonSlurper
 
 class Fabric {
 	def name
+	def zookeeper
+	def zookeeperTimeout = "30s"
+	def color = "#005a87"
 	def server
 	def model
 	
@@ -14,6 +17,18 @@ class Fabric {
 	
 	def server(GluServer server) {
 		this.server = server
+	}
+	
+	def zookeeper(String zookeeper) {
+		this.zookeeper = zookeeper
+	}
+	
+	def zookeeperTimeout(String zookeeperTimeout) {
+		this.zookeeperTimeout = zookeeperTimeout
+	}
+	
+	def color(String color) {
+		this.color = color
 	}
 	
 	def model(Map jsonMap) {

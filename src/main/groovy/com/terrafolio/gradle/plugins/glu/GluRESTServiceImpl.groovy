@@ -2,6 +2,7 @@ package com.terrafolio.gradle.plugins.glu
 
 import java.util.List;
 import java.util.Map;
+import net.sf.json.xml.XMLSerializer
 
 import groovyx.net.http.RESTClient
 import groovyx.net.http.ContentType
@@ -34,17 +35,47 @@ class GluRESTServiceImpl implements GluService {
 	public String getTargetServer() {
 		return url
 	}
+	
+	@Override 
+	public Object getFabric(String fabricName) throws GluServiceException {
+		try {
+			def client = getRestClient()
+			client.parser.'text/json' = client.parser.'application/json'
+			return client.request(Method.GET) { request ->
+				uri.path = ""
+				
+				response.'404' = { resp ->
+					null
+				}
+			}
+		} catch (Exception e) {
+			throw new GluServiceException("Glu Service Call Failed", e)
+		}
+	}
+	
+	@Override
+	public void createFabric(String fabricName, String zookeeper, String zookeeperTimeout, String color) throws GluServiceException {
+		try {
+			def client = getRestClient()
+			client.parser.'text/html' = client.parser.'text/plain'
+			client.request(Method.PUT) { request ->
+				uri.path = ""
+				uri.query = [ 'zkConnectString': zookeeper, 'zkSessionTimeout': zookeeperTimeout, 'color': color ]
+			}
+		} catch (Exception e) {
+			throw new GluServiceException("Glu Service Call Failed", e)
+		}
+	}
 
 	@Override
 	public void loadModel(String fabricName, Map fabric) throws GluServiceException {
 		try {
-			getRestClient().request(Method.POST, ContentType.JSON) { request ->
+			def client = getRestClient()
+			client.parser.'text/html' = client.parser.'text/plain'
+			client.request(Method.POST, ContentType.TEXT) { request ->
 				uri.path = 'model/static'
+				requestContentType = ContentType.JSON
 				body = fabric
-				
-				//response.success = { resp, json ->
-					// Nothing to do if successful
-				//}
 			}
 		} catch (Exception e) {
 			throw new GluServiceException("Glu Service Call Failed", e)
@@ -60,7 +91,6 @@ class GluRESTServiceImpl implements GluService {
 			getRestClient().request(Method.POST) { request ->
 				uri.path = 'plans'
 				requestContentType = ContentType.URLENC
-				
 				
 				body = [ systemFilter: 'tags.hasAll(\'' + tags.join(';') + '\')', order: order ] + action
 				

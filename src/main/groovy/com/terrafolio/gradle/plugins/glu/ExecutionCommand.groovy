@@ -28,7 +28,7 @@ class ExecutionCommand implements Command {
 		def planId = service.createPlan(fabricName, tags, action, order)
 		
 		if (planId == null) {
-			logger.warn('Either there are no changes to deploy or the filters did not match any servers')
+			logger.warn('Either there are no changes to deploy or the filters did not match any agents')
 			return Constants.SUCCESS
 		}
 		

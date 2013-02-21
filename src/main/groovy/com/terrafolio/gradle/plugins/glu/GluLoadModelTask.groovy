@@ -8,6 +8,7 @@ import org.gradle.api.DefaultTask
 
 
 class GluLoadModelTask extends GluAbstractTask {
+	def createFabric = false
 	def Chain executionChain = ExecutionChainFactory.getExecutionChain()
 	
 	@Override
@@ -18,8 +19,15 @@ class GluLoadModelTask extends GluAbstractTask {
 		context.put(Constants.LOGGER, project.logger)
 		context.put(Constants.CONSOLE_URL, fabric.server.url)
 		
-		def Command command = new LoadModelCommand(fabric.model)
-		executionChain.addCommand(command)
+		if (createFabric) {
+			executionChain.addCommand(new CreateFabricCommand(fabric.name, fabric.zookeeper, fabric.zookeeperTimeout, fabric.color))
+		}
+		
+		executionChain.addCommand(new LoadModelCommand(fabric.model))
 		executionChain.execute(context)
+	}
+	
+	def createFabric(boolean createFabric) {
+		this.createFabric = createFabric
 	}
 }

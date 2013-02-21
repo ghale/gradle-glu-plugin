@@ -5,8 +5,12 @@ import static org.junit.Assert.*
 import com.terrafolio.gradle.plugins.glu.GluRESTServiceImpl
 import com.terrafolio.gradle.plugins.glu.GluServiceException
 import groovy.json.JsonBuilder
+import groovy.json.JsonSlurper
 import groovy.mock.interceptor.MockFor
 import groovy.xml.StreamingMarkupBuilder
+import net.sf.json.JSON
+import net.sf.json.JSONSerializer
+import net.sf.json.xml.XMLSerializer
 import org.apache.http.HttpResponse
 import org.apache.http.message.BasicHttpResponse
 import org.apache.http.message.BasicStatusLine
@@ -48,11 +52,16 @@ class GluRESTServiceImplTest {
 		def fabric = [fabric: 'test']
 		
 		mockRESTClient.demand.with {
+			getParser(2) {
+				return new Expando()
+			}
+			
 			request() { method, type, closure ->
 				def reqMethod = method.getRequestType().newInstance();
 				def configDelegate = new Expando()
 				configDelegate.uri = new Expando()
 				configDelegate.response = new Expando()
+				configDelegate.headers = new Expando()
 				 
 				closure.setDelegate(configDelegate)
 				closure.setResolveStrategy(Closure.DELEGATE_FIRST)
@@ -63,7 +72,7 @@ class GluRESTServiceImplTest {
 				
 				assert configDelegate.body == fabric
 				assert configDelegate.uri.path == 'model/static'
-				//configDelegate.response.success.call(response, null)
+				assert configDelegate.requestContentType == ContentType.JSON
 			}
 		}
 		
@@ -79,11 +88,16 @@ class GluRESTServiceImplTest {
 		def fabric = [fabric: 'test']
 		
 		mockRESTClient.demand.with {
+			getParser(2) {
+				return new Expando()
+			}
+			
 			request() { method, type, closure ->
 				def reqMethod = method.getRequestType().newInstance();
 				def configDelegate = new Expando()
 				configDelegate.uri = new Expando()
 				configDelegate.response = new Expando()
+				configDelegate.headers = new Expando()
 				
 				closure.setDelegate(configDelegate)
 				closure.setResolveStrategy(Closure.DELEGATE_FIRST)
@@ -122,7 +136,7 @@ class GluRESTServiceImplTest {
 				closure.call(reqMethod)
 				
 				HttpResponse baseResponse = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, 201, "OK"))
-				HttpResponseDecorator response = new HttpResponseDecorator(baseResponse, "8283e25e-f68d-4bbd-8a71-5149f23466ec")
+				HttpResponseDecorator response = new HttpResponseDecorator(baseResponse, planId)
 				response.setHeader("Location", "http://localhost:8080/console/rest/v1/glu-dev-1/plan/" + planId)
 				
 				assert configDelegate.uri.path == 'plans'
@@ -432,6 +446,124 @@ class GluRESTServiceImplTest {
 			def service = new GluRESTServiceImpl("http://test", "testuser", "testpass")
 			
 			service.getExecutionStatus('test', planId, executionId)
+		}
+	}
+	
+	@Test
+	def void getFabric_callsServiceWithCorrectArgs() {
+		def fabricName = "test"
+		def fabric = '''\
+{
+  "color": "#005a87",
+  "name": "test",
+  "zkConnectString": "localhost:2181",
+  "zkSessionTimeout": "30s"
+}'''
+		mockRESTClient.demand.with {
+			getParser(2) {
+				return new Expando()
+			}
+			
+			request() { method, closure ->
+				def reqMethod = method.getRequestType().newInstance();
+				def configDelegate = new Expando()
+				configDelegate.uri = new Expando()
+				configDelegate.response = new Expando()
+				
+				closure.setDelegate(configDelegate)
+				closure.setResolveStrategy(Closure.DELEGATE_FIRST)
+				closure.call(reqMethod)
+				
+				HttpResponse baseResponse = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, 200, "OK"))
+				HttpResponseDecorator response = new HttpResponseDecorator(baseResponse, fabric)
+				
+				assert method == Method.GET
+				assert configDelegate.uri.path == ""
+				return fabric
+			}
+		}
+		
+		mockRESTClient.ignore('getClient')
+		mockRESTClient.use {
+			def service = new GluRESTServiceImpl("http://test", "testuser", "testpass")
+			assert service.getFabric(fabricName) != null
+		}
+		
+	}
+	
+	@Test
+	def void getFabric_returnsNullOnMissingFabric() {
+		def fabricName = "test"
+		
+		mockRESTClient.demand.with {
+			getParser(2) {
+				return new Expando()
+			}
+			
+			request() { method, closure ->
+				def reqMethod = method.getRequestType().newInstance();
+				def configDelegate = new Expando()
+				configDelegate.uri = new Expando()
+				configDelegate.response = new Expando()
+				
+				closure.setDelegate(configDelegate)
+				closure.setResolveStrategy(Closure.DELEGATE_FIRST)
+				closure.call(reqMethod)
+				
+				HttpResponse baseResponse = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, 404, "NOT Found"))
+				HttpResponseDecorator response = new HttpResponseDecorator(baseResponse, null)
+				
+				assert method == Method.GET
+				assert configDelegate.uri.path == ""
+				return configDelegate.response.'404'.call(response)
+			}
+		}
+		
+		mockRESTClient.ignore('getClient')
+		mockRESTClient.use {
+			def service = new GluRESTServiceImpl("http://test", "testuser", "testpass")
+			assert service.getFabric(fabricName) == null
+		}
+		
+	}
+	
+	@Test 
+	def void createFabric_callsServiceWithCorrectArgs() {
+		def fabricName = "test"
+		def zookeeper = "localhost:2181"
+		def zookeeperTimeout = "30s"
+		def color = "#005a87"
+		
+		
+		mockRESTClient.demand.with {
+			getParser(2) {
+				return new Expando()
+			}
+			
+			request() { method, closure ->
+				def reqMethod = method.getRequestType().newInstance();
+				def configDelegate = new Expando()
+				configDelegate.uri = new Expando()
+				configDelegate.response = new Expando()
+				configDelegate.headers = new Expando()
+				
+				closure.setDelegate(configDelegate)
+				closure.setResolveStrategy(Closure.DELEGATE_FIRST)
+				closure.call(reqMethod)
+				
+				HttpResponse baseResponse = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, 200, "OK"))
+				HttpResponseDecorator response = new HttpResponseDecorator(baseResponse, null)
+				
+				assert method == Method.PUT
+				assert configDelegate.uri.path == ""
+				assert configDelegate.uri.query == [ zkConnectString: zookeeper, zkSessionTimeout: zookeeperTimeout, 'color': color ]
+			}
+		}
+		
+		mockRESTClient.ignore('getClient')
+		mockRESTClient.use {
+			def service = new GluRESTServiceImpl("http://test", "testuser", "testpass")
+			service.createFabric(fabricName, zookeeper, zookeeperTimeout, color)
 		}
 	}
 	
