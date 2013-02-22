@@ -2,17 +2,20 @@ package com.terrafolio.gradle.plugins.glu
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.plugins.BasePlugin
 
 class GluPlugin implements Plugin<Project> {
 
 	@Override
 	public void apply(Project project) {
+		project.plugins.apply(BasePlugin.class)
+		
 		applyConventions(project)
 		applyTasks(project)
 	}
 	
 	def void applyTasks(Project project) {
-		project.task('generateFabrics', type: GluGenerateFabricsTask)
+		project.tasks.add('generateModels', GluGenerateModelsTask.class)
 	}
 	
 	def void applyConventions(Project project) {

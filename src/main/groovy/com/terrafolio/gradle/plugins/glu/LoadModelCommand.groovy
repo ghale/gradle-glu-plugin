@@ -4,10 +4,10 @@ import org.apache.commons.chain.Command
 import org.apache.commons.chain.Context;
 
 class LoadModelCommand implements Command {
-	def fabric
+	def model
 	
-	public LoadModelCommand(Map fabric) {
-		this.fabric = fabric
+	public LoadModelCommand(String model) {
+		this.model = model
 	}
 
 	@Override
@@ -21,7 +21,7 @@ class LoadModelCommand implements Command {
 		}
 		
 		logger.info("Deploying model to the ${fabricName} fabric on ${service.targetServer}")
-		service.loadModel(fabricName, fabric)
+		service.loadModel(fabricName, model)
 		return Constants.SUCCESS
 	}
 

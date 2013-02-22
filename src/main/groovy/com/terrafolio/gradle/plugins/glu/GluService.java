@@ -10,7 +10,7 @@ public interface GluService {
 	
 	public void createFabric(String fabricName, String zookeeper, String zookeeperTimeout, String color) throws GluServiceException;
 	
-	public void loadModel(String fabricName, Map<String,Object> fabric) throws GluServiceException;
+	public void loadModel(String fabricName, String model) throws GluServiceException;
 	
 	public String createPlan(String fabricName, List<String> tags, Map<String,String> action, String order) throws GluServiceException;
 	

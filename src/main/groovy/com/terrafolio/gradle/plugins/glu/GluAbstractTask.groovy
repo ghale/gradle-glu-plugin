@@ -15,7 +15,7 @@ abstract class GluAbstractTask extends DefaultTask {
 	}
 	
 	@TaskAction
-	def executeTask() {
+	def void executeTask() {
 		initialize()
 		doExecute()
 	}
@@ -24,5 +24,5 @@ abstract class GluAbstractTask extends DefaultTask {
 		
 	}
 	
-	def abstract doExecute()
+	def abstract void doExecute()
 }

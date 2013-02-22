@@ -68,14 +68,14 @@ class GluRESTServiceImpl implements GluService {
 	}
 
 	@Override
-	public void loadModel(String fabricName, Map fabric) throws GluServiceException {
+	public void loadModel(String fabricName, String model) throws GluServiceException {
 		try {
 			def client = getRestClient()
 			client.parser.'text/html' = client.parser.'text/plain'
 			client.request(Method.POST, ContentType.TEXT) { request ->
 				uri.path = 'model/static'
 				requestContentType = ContentType.JSON
-				body = fabric
+				body = model
 			}
 		} catch (Exception e) {
 			throw new GluServiceException("Glu Service Call Failed", e)

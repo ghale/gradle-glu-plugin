@@ -29,11 +29,21 @@ class Application {
 							'agent': agent,
 							'mountPoint': mountPoint,
 							'script': script,
-							'tags': genTags + options.tags + tags,
+							'tags': mergeTags([ genTags, options.tags, tags ]),
 							'initParameters': options.initParameters
 							]
 					}	
 				]
 				
+	}
+	
+	def mergeTags(List tagsList) {
+		def allTags = []
+		tagsList.each { tagList ->
+			if (tagList != null) {
+				allTags += tagList
+			}
+		}
+		return allTags
 	}
 }

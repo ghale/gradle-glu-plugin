@@ -3,13 +3,14 @@ package com.terrafolio.gradle.plugins.glu.test;
 import static org.junit.Assert.*;
 import com.terrafolio.gradle.plugins.glu.GluConfiguration
 import com.terrafolio.gradle.plugins.glu.GluConfigurationConvention
-import com.terrafolio.gradle.plugins.glu.GluGenerateFabricsTask
+import com.terrafolio.gradle.plugins.glu.GluGenerateModelsTask
 import com.terrafolio.gradle.plugins.glu.GluPlugin
 import org.gradle.api.NamedDomainObjectCollection
 import org.gradle.api.Project;
 import org.junit.Test;
 import org.junit.Before;
 import org.gradle.testfixtures.ProjectBuilder
+import org.gradle.api.plugins.BasePlugin
 
 class GluPluginTest {
 	def private final Project project = ProjectBuilder.builder().withProjectDir(new File('build/tmp/test')).build()
@@ -18,6 +19,11 @@ class GluPluginTest {
 	@Before
 	def void setupProject() {
 		plugin.apply(project)
+	}
+	
+	@Test
+	def void apply_appliesBasePlugin() {
+		assert project.plugins.findPlugin(BasePlugin.class) != null
 	}
 	
 	@Test
@@ -35,6 +41,6 @@ class GluPluginTest {
 	
 	@Test
 	def void apply_appliesTasks() {
-		assert project.tasks.findByName('generateFabrics') instanceof GluGenerateFabricsTask
+		assert project.tasks.generateModels instanceof GluGenerateModelsTask
 	}
 }

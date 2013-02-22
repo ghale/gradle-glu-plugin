@@ -49,7 +49,10 @@ class GluRESTServiceImplTest {
 	
 	@Test
 	def void loadModel_callsServiceWithCorrectArgs() {
-		def fabric = [fabric: 'test']
+		def modelMap = [fabric: 'test']
+		def builder = new JsonBuilder()
+		builder modelMap
+		def model = builder.toString()
 		
 		mockRESTClient.demand.with {
 			getParser(2) {
@@ -70,7 +73,7 @@ class GluRESTServiceImplTest {
 				HttpResponse baseResponse = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, 204, "OK"))
 				HttpResponseDecorator response = new HttpResponseDecorator(baseResponse, null)
 				
-				assert configDelegate.body == fabric
+				assert configDelegate.body == model
 				assert configDelegate.uri.path == 'model/static'
 				assert configDelegate.requestContentType == ContentType.JSON
 			}
@@ -79,13 +82,17 @@ class GluRESTServiceImplTest {
 		mockRESTClient.ignore('getClient')
 		mockRESTClient.use {
 			def service = new GluRESTServiceImpl("http://test", "testuser", "testpass")
-			service.loadModel('test', fabric)
+			
+			service.loadModel('test', model)
 		}
 	}
 	
 	@Test (expected = GluServiceException.class)
 	def void loadModel_throwsExceptionOnFailure() {
-		def fabric = [fabric: 'test']
+		def modelMap = [fabric: 'test']
+		def builder = new JsonBuilder()
+		builder modelMap
+		def model = builder.toString()
 		
 		mockRESTClient.demand.with {
 			getParser(2) {
@@ -113,7 +120,7 @@ class GluRESTServiceImplTest {
 		mockRESTClient.ignore('getClient')
 		mockRESTClient.use {
 			def service = new GluRESTServiceImpl("http://test", "testuser", "testpass")
-			service.loadModel('test', fabric)
+			service.loadModel('test', model)
 		}
 	}
 	

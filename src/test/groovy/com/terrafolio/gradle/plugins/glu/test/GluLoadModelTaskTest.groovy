@@ -74,7 +74,7 @@ class GluLoadModelTaskTest {
 					
 					@Override
 					public void addCommand(Command command) {
-						assert command.fabric == project.glu.fabrics.test.model
+						assert command.model == project.glu.fabrics.test.generate()
 						assert command instanceof LoadModelCommand
 						commands += command
 					}
@@ -141,7 +141,7 @@ class GluLoadModelTaskTest {
 						assert command instanceof LoadModelCommand || command instanceof CreateFabricCommand
 						
 						if (command instanceof LoadModelCommand) {
-							assert command.fabric == project.glu.fabrics.test.model
+							assert command.model == project.glu.fabrics.test.generate()
 						} else {
 							assert command.fabricName == project.glu.fabrics.test.name
 							assert command.zookeeper == project.glu.fabrics.test.zookeeper

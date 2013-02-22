@@ -12,7 +12,7 @@ class GluLoadModelTask extends GluAbstractTask {
 	def Chain executionChain = ExecutionChainFactory.getExecutionChain()
 	
 	@Override
-	def doExecute() {
+	def void doExecute() {
 		def context = new ContextBase()
 		context.put(Constants.SERVICE, getService())
 		context.put(Constants.FABRIC, fabric.name)
@@ -23,7 +23,7 @@ class GluLoadModelTask extends GluAbstractTask {
 			executionChain.addCommand(new CreateFabricCommand(fabric.name, fabric.zookeeper, fabric.zookeeperTimeout, fabric.color))
 		}
 		
-		executionChain.addCommand(new LoadModelCommand(fabric.model))
+		executionChain.addCommand(new LoadModelCommand(fabric.generate()))
 		executionChain.execute(context)
 	}
 	

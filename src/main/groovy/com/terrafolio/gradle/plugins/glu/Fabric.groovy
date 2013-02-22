@@ -72,8 +72,13 @@ class Fabric {
 	}
 	
 	def generate() {
+		return generate(false)
+	}
+	
+	def generate(boolean prettyPrint) {
 		def builder = new JsonBuilder()
-		builder merge([ 'fabric': name ])
-		return builder.toString()
+		model['fabric'] = name
+		builder model
+		return prettyPrint ? builder.toPrettyString() : builder.toString()
 	}
 }

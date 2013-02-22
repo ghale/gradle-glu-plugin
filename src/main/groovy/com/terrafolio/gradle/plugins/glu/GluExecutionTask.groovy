@@ -14,7 +14,7 @@ class GluExecutionTask extends GluAbstractTask {
 	def Chain executionChain = ExecutionChainFactory.getExecutionChain()
 	
 	@Override
-	def doExecute() {
+	def void doExecute() {
 		def Context context = new ContextBase()
 		context.put(Constants.SERVICE, getService())
 		context.put(Constants.FABRIC, fabric.name)
