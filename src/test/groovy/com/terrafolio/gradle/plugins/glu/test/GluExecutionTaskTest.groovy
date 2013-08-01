@@ -90,12 +90,12 @@ class GluExecutionTaskTest {
 		}
 		
 		mockChainFactory.use {
-			project.task('deployTest', type: GluExecutionTask) {
+			project.task('deployTestStep1', type: GluExecutionTask) {
 				fabric project.glu.fabrics.test
 				
 				deploy(tags: [ 'step001' ])
 			}
-			project.tasks.deployTest.execute()
+			project.tasks.deployTestStep1.execute()
 		}
 	}
 	
@@ -126,12 +126,12 @@ class GluExecutionTaskTest {
 		}
 		
 		mockChainFactory.use {
-			project.task('deployTest', type: GluExecutionTask) {
+			project.task('deployTest1', type: GluExecutionTask) {
 				fabric project.glu.fabrics.test
 				
 				deploy()
 			}
-			project.tasks.deployTest.execute()
+			project.tasks.deployTest1.execute()
 		}
 	}
 	
@@ -162,12 +162,12 @@ class GluExecutionTaskTest {
 		}
 		
 		mockChainFactory.use {
-			project.task('redeployTest', type: GluExecutionTask) {
+			project.task('redeployTestStep1', type: GluExecutionTask) {
 				fabric project.glu.fabrics.test
 				
 				redeploy(tags: [ 'step001' ])
 			}
-			project.tasks.redeployTest.execute()
+			project.tasks.redeployTestStep1.execute()
 		}
 	}
 	
@@ -198,12 +198,12 @@ class GluExecutionTaskTest {
 		}
 		
 		mockChainFactory.use {
-			project.task('redeployTest', type: GluExecutionTask) {
+			project.task('redeployTest1', type: GluExecutionTask) {
 				fabric project.glu.fabrics.test
 				
 				redeploy()
 			}
-			project.tasks.redeployTest.execute()
+			project.tasks.redeployTest1.execute()
 		}
 	}
 	
@@ -234,12 +234,12 @@ class GluExecutionTaskTest {
 		}
 		
 		mockChainFactory.use {
-			project.task('undeployTest', type: GluExecutionTask) {
+			project.task('undeployTestStep1', type: GluExecutionTask) {
 				fabric project.glu.fabrics.test
 				
 				undeploy(tags: [ 'step001' ])
 			}
-			project.tasks.undeployTest.execute()
+			project.tasks.undeployTestStep1.execute()
 		}
 	}
 	
@@ -270,12 +270,12 @@ class GluExecutionTaskTest {
 		}
 		
 		mockChainFactory.use {
-			project.task('undeployTest', type: GluExecutionTask) {
+			project.task('undeployTest1', type: GluExecutionTask) {
 				fabric project.glu.fabrics.test
 				
 				undeploy()
 			}
-			project.tasks.undeployTest.execute()
+			project.tasks.undeployTest1.execute()
 		}
 	}
 	
@@ -306,12 +306,12 @@ class GluExecutionTaskTest {
 		}
 		
 		mockChainFactory.use {
-			project.task('startTest', type: GluExecutionTask) {
+			project.task('startTestStep1', type: GluExecutionTask) {
 				fabric project.glu.fabrics.test
 				
 				start(tags: [ 'step001' ])
 			}
-			project.tasks.startTest.execute()
+			project.tasks.startTestStep1.execute()
 		}
 	}
 	
@@ -342,12 +342,12 @@ class GluExecutionTaskTest {
 		}
 		
 		mockChainFactory.use {
-			project.task('startTest', type: GluExecutionTask) {
+			project.task('startTest1', type: GluExecutionTask) {
 				fabric project.glu.fabrics.test
 				
 				start()
 			}
-			project.tasks.startTest.execute()
+			project.tasks.startTest1.execute()
 		}
 	}
 	
@@ -378,12 +378,12 @@ class GluExecutionTaskTest {
 		}
 		
 		mockChainFactory.use {
-			project.task('stopTest', type: GluExecutionTask) {
+			project.task('stopTestStep1', type: GluExecutionTask) {
 				fabric project.glu.fabrics.test
 				
 				stop(tags: [ 'step001' ])
 			}
-			project.tasks.stopTest.execute()
+			project.tasks.stopTestStep1.execute()
 		}
 	}
 	
@@ -414,12 +414,12 @@ class GluExecutionTaskTest {
 		}
 		
 		mockChainFactory.use {
-			project.task('stopTest', type: GluExecutionTask) {
+			project.task('stopTest1', type: GluExecutionTask) {
 				fabric project.glu.fabrics.test
 				
 				stop()
 			}
-			project.tasks.stopTest.execute()
+			project.tasks.stopTest1.execute()
 		}
 	}
 	
@@ -450,12 +450,12 @@ class GluExecutionTaskTest {
 		}
 		
 		mockChainFactory.use {
-			project.task('bounceTest', type: GluExecutionTask) {
+			project.task('bounceTestStep1', type: GluExecutionTask) {
 				fabric project.glu.fabrics.test
 				
 				bounce(tags: [ 'step001' ])
 			}
-			project.tasks.bounceTest.execute()
+			project.tasks.bounceTestStep1.execute()
 		}
 	}
 	
@@ -486,12 +486,12 @@ class GluExecutionTaskTest {
 		}
 		
 		mockChainFactory.use {
-			project.task('bounceTest', type: GluExecutionTask) {
+			project.task('bounceTest1', type: GluExecutionTask) {
 				fabric project.glu.fabrics.test
 				
 				bounce()
 			}
-			project.tasks.bounceTest.execute()
+			project.tasks.bounceTest1.execute()
 		}
 	}
 	
@@ -517,13 +517,13 @@ class GluExecutionTaskTest {
 		}
 		
 		mockChainFactory.use {
-			project.task('bounceTest', type: GluExecutionTask) {
+			project.task('bounceTestStep1', type: GluExecutionTask) {
 				fabric project.glu.fabrics.test
 				order 'sequential'
 				
 				bounce(tags: [ 'step001' ])
 			}
-			project.tasks.bounceTest.execute()
+			project.tasks.bounceTestStep1.execute()
 		}
 	}
 	
@@ -549,12 +549,12 @@ class GluExecutionTaskTest {
 		}
 		
 		mockChainFactory.use {
-			project.task('bounceTest', type: GluExecutionTask) {
+			project.task('bounceTest1', type: GluExecutionTask) {
 				fabric project.glu.fabrics.test
 				
 				bounce(tags: [ 'step001' ], order: 'sequential')
 			}
-			project.tasks.bounceTest.execute()
+			project.tasks.bounceTest1.execute()
 		}
 	}
 	
@@ -622,12 +622,12 @@ class GluExecutionTaskTest {
 		}
 		
 		mockChainFactory.use {
-			project.task('stopTest', type: GluExecutionTask) {
+			project.task('stopTest1', type: GluExecutionTask) {
 				fabric project.glu.fabrics.test
 				
 				stop(tags: [ 'step001' ])
 			}
-			project.tasks.stopTest.execute()
+			project.tasks.stopTest1.execute()
 		}
 	}
 	
@@ -653,7 +653,7 @@ class GluExecutionTaskTest {
 		
 		mockChainFactory.use {
 			def testExecutionTime = 11111
-			project.task('bounceTest', type: GluExecutionTask) {
+			project.task('bounceTest1', type: GluExecutionTask) {
 				fabric project.glu.fabrics.test
 				executionTime = testExecutionTime
 				
@@ -661,12 +661,12 @@ class GluExecutionTaskTest {
 			}
 			
 			project.ext.called = false
-			project.tasks.bounceTest.sleepUntil = { executionTime -> 
+			project.tasks.bounceTest1.sleepUntil = { executionTime -> 
 				assert executionTime == testExecutionTime
 				project.ext.called = true
 			} 
 			
-			project.tasks.bounceTest.execute()
+			project.tasks.bounceTest1.execute()
 			assert project.ext.called
 		}
 	}

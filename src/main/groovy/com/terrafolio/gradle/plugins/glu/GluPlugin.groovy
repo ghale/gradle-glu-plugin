@@ -12,20 +12,24 @@ class GluPlugin implements Plugin<Project> {
 		
 		applyConventions(project)
 		applyTasks(project)
-		project.afterEvaluate { autoconfigureTasks(project) }
+		applyRules(project)
 	}
 	
 	def void applyTasks(Project project) {
 		project.task('generateModels', type: GluGenerateModelsTask.class)
 	}
 	
-	def void autoconfigureTasks(Project project) {
-		project.glu.fabrics.each { _fabric ->
+	def void applyRules(Project project) {
+		project.glu.fabrics.addRule('AutoConfigure Tasks') { fabricName ->
 			[ 'start', 'stop', 'deploy', 'redeploy', 'undeploy', 'bounce' ].each { action ->
-				project.task("${action}${_fabric.name.capitalize()}", type: GluExecutionTask) {
-					fabric _fabric
+				project.task("${action}${fabricName.capitalize()}", type: GluExecutionTask) {
+					fabric { project.glu.fabrics.findByName(fabricName) }
 					"${action}"()
 				}
+			}
+			
+			project.task("loadModel${fabricName.capitalize()}", type: GluLoadModelTask) {
+				fabric { project.glu.fabrics.findByName(fabricName) }
 			}
 		}
 	}

@@ -45,7 +45,7 @@ class GluPluginTest {
 	}
 	
 	@Test
-	def void autoconfigure_appliesTasks() {
+	def void apply_autoconfiguresTasks() {
 		project.glu {
 			fabrics {
 				test1 { }
@@ -53,9 +53,7 @@ class GluPluginTest {
 			}
 		}
 		
-		plugin.autoconfigureTasks(project)
-		
-		[ 'start', 'stop', 'deploy', 'redeploy', 'undeploy', 'bounce'].each { action ->
+		[ 'start', 'stop', 'deploy', 'redeploy', 'undeploy', 'bounce', 'loadModel' ].each { action ->
 			[ 'test1', 'test2'].each { fabric ->
 				assert project.tasks.findByName("${action}${fabric.capitalize()}")
 			}
