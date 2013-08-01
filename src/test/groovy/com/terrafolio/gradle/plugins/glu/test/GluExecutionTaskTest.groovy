@@ -100,6 +100,42 @@ class GluExecutionTaskTest {
 	}
 	
 	@Test
+	def void deploy_callsExecutionCommandWithEmptyMap() {
+		mockChainFactory.demand.with {
+			getExecutionChain() {
+				return new Chain() {
+					def commands = []
+					
+					@Override
+					public void addCommand(Command command) {
+						commands += command
+					}
+					
+					@Override
+					public boolean execute(Context context) throws Exception {
+						assert context.get(Constants.FABRIC) == 'test'
+						assert context.get(Constants.LOGGER) == project.logger
+						assert commands.size == 1
+						assert commands[0].action == [ planAction: 'deploy' ]
+						assert commands[0].tags == []
+						assert commands[0].order == 'parallel'
+						return Constants.SUCCESS
+					}
+				}
+			}
+		}
+		
+		mockChainFactory.use {
+			project.task('deployTest', type: GluExecutionTask) {
+				fabric project.glu.fabrics.test
+				
+				deploy()
+			}
+			project.tasks.deployTest.execute()
+		}
+	}
+	
+	@Test
 	def void redeploy_callsExecutionCommandWithCorrectArgs() {
 		mockChainFactory.demand.with {
 			getExecutionChain() {
@@ -130,6 +166,42 @@ class GluExecutionTaskTest {
 				fabric project.glu.fabrics.test
 				
 				redeploy(tags: [ 'step001' ])
+			}
+			project.tasks.redeployTest.execute()
+		}
+	}
+	
+	@Test
+	def void redeploy_callsExecutionCommandWithEmptyMap() {
+		mockChainFactory.demand.with {
+			getExecutionChain() {
+				return new Chain() {
+					def commands = []
+					
+					@Override
+					public void addCommand(Command command) {
+						commands += command
+					}
+					
+					@Override
+					public boolean execute(Context context) throws Exception {
+						assert context.get(Constants.FABRIC) == 'test'
+						assert context.get(Constants.LOGGER) == project.logger
+						assert commands.size == 1
+						assert commands[0].action == [ planAction: 'redeploy' ]
+						assert commands[0].tags == []
+						assert commands[0].order == 'parallel'
+						return Constants.SUCCESS
+					}
+				}
+			}
+		}
+		
+		mockChainFactory.use {
+			project.task('redeployTest', type: GluExecutionTask) {
+				fabric project.glu.fabrics.test
+				
+				redeploy()
 			}
 			project.tasks.redeployTest.execute()
 		}
@@ -172,6 +244,42 @@ class GluExecutionTaskTest {
 	}
 	
 	@Test
+	def void undeploy_callsExecutionCommandWithEmptyMap() {
+		mockChainFactory.demand.with {
+			getExecutionChain() {
+				return new Chain() {
+					def commands = []
+					
+					@Override
+					public void addCommand(Command command) {
+						commands += command
+					}
+					
+					@Override
+					public boolean execute(Context context) throws Exception {
+						assert context.get(Constants.FABRIC) == 'test'
+						assert context.get(Constants.LOGGER) == project.logger
+						assert commands.size == 1
+						assert commands[0].action == [ planAction: 'undeploy' ]
+						assert commands[0].tags == []
+						assert commands[0].order == 'parallel'
+						return Constants.SUCCESS
+					}
+				}
+			}
+		}
+		
+		mockChainFactory.use {
+			project.task('undeployTest', type: GluExecutionTask) {
+				fabric project.glu.fabrics.test
+				
+				undeploy()
+			}
+			project.tasks.undeployTest.execute()
+		}
+	}
+	
+	@Test
 	def void start_callsExecutionCommandWithCorrectArgs() {
 		mockChainFactory.demand.with {
 			getExecutionChain() {
@@ -202,6 +310,42 @@ class GluExecutionTaskTest {
 				fabric project.glu.fabrics.test
 				
 				start(tags: [ 'step001' ])
+			}
+			project.tasks.startTest.execute()
+		}
+	}
+	
+	@Test
+	def void start_callsExecutionCommandWithEmptyMap() {
+		mockChainFactory.demand.with {
+			getExecutionChain() {
+				return new Chain() {
+					def commands = []
+					
+					@Override
+					public void addCommand(Command command) {
+						commands += command
+					}
+					
+					@Override
+					public boolean execute(Context context) throws Exception {
+						assert context.get(Constants.FABRIC) == 'test'
+						assert context.get(Constants.LOGGER) == project.logger
+						assert commands.size == 1
+						assert commands[0].action == [ planAction: 'start' ]
+						assert commands[0].tags == []
+						assert commands[0].order == 'parallel'
+						return Constants.SUCCESS
+					}
+				}
+			}
+		}
+		
+		mockChainFactory.use {
+			project.task('startTest', type: GluExecutionTask) {
+				fabric project.glu.fabrics.test
+				
+				start()
 			}
 			project.tasks.startTest.execute()
 		}
@@ -244,6 +388,42 @@ class GluExecutionTaskTest {
 	}
 	
 	@Test
+	def void stop_callsExecutionCommandWithEmptyMap() {
+		mockChainFactory.demand.with {
+			getExecutionChain() {
+				return new Chain() {
+					def commands = []
+					
+					@Override
+					public void addCommand(Command command) {
+						commands += command
+					}
+					
+					@Override
+					public boolean execute(Context context) throws Exception {
+						assert context.get(Constants.FABRIC) == 'test'
+						assert context.get(Constants.LOGGER) == project.logger
+						assert commands.size == 1
+						assert commands[0].action == [ planAction: 'stop' ]
+						assert commands[0].tags == []
+						assert commands[0].order == 'parallel'
+						return Constants.SUCCESS
+					}
+				}
+			}
+		}
+		
+		mockChainFactory.use {
+			project.task('stopTest', type: GluExecutionTask) {
+				fabric project.glu.fabrics.test
+				
+				stop()
+			}
+			project.tasks.stopTest.execute()
+		}
+	}
+	
+	@Test
 	def void bounce_callsExecutionCommandWithCorrectArgs() {
 		mockChainFactory.demand.with {
 			getExecutionChain() {
@@ -274,6 +454,42 @@ class GluExecutionTaskTest {
 				fabric project.glu.fabrics.test
 				
 				bounce(tags: [ 'step001' ])
+			}
+			project.tasks.bounceTest.execute()
+		}
+	}
+	
+	@Test
+	def void bounce_callsExecutionCommandWithEmptyMap() {
+		mockChainFactory.demand.with {
+			getExecutionChain() {
+				return new Chain() {
+					def commands = []
+					
+					@Override
+					public void addCommand(Command command) {
+						commands += command
+					}
+					
+					@Override
+					public boolean execute(Context context) throws Exception {
+						assert context.get(Constants.FABRIC) == 'test'
+						assert context.get(Constants.LOGGER) == project.logger
+						assert commands.size == 1
+						assert commands[0].action == [ planAction: 'bounce' ]
+						assert commands[0].tags == []
+						assert commands[0].order == 'parallel'
+						return Constants.SUCCESS
+					}
+				}
+			}
+		}
+		
+		mockChainFactory.use {
+			project.task('bounceTest', type: GluExecutionTask) {
+				fabric project.glu.fabrics.test
+				
+				bounce()
 			}
 			project.tasks.bounceTest.execute()
 		}

@@ -43,4 +43,22 @@ class GluPluginTest {
 	def void apply_appliesTasks() {
 		assert project.tasks.generateModels instanceof GluGenerateModelsTask
 	}
+	
+	@Test
+	def void autoconfigure_appliesTasks() {
+		project.glu {
+			fabrics {
+				test1 { }
+				test2 { }
+			}
+		}
+		
+		plugin.autoconfigureTasks(project)
+		
+		[ 'start', 'stop', 'deploy', 'redeploy', 'undeploy', 'bounce'].each { action ->
+			[ 'test1', 'test2'].each { fabric ->
+				assert project.tasks.findByName("${action}${fabric.capitalize()}")
+			}
+		}
+	}
 }

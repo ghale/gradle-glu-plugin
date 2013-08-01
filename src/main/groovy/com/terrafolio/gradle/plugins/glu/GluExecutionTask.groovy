@@ -44,32 +44,32 @@ class GluExecutionTask extends GluAbstractTask {
 		return map.containsKey('order') ? map.order : order
 	}
 	
-	def void start(Map map) {
+	def void start(Map map = [tags: []]) {
 		def Command command = new ExecutionCommand([ planAction: 'start' ], map.tags, getOrder(map))
 		executionChain.addCommand(command)
 	}
 	
-	def void deploy(Map map) {
+	def void deploy(Map map = [tags: []]) {
 		def Command command = new ExecutionCommand([ planAction: 'deploy' ], map.tags, getOrder(map))
 		executionChain.addCommand(command)
 	}
 	
-	def void stop(Map map) {
+	def void stop(Map map = [tags: []]) {
 		def Command command = new ExecutionCommand([ planAction: 'stop' ], map.tags, getOrder(map))
 		executionChain.addCommand(command)
 	}
 	
-	def void redeploy(Map map) {
+	def void redeploy(Map map = [tags: []]) {
 		def Command command = new ExecutionCommand([ planAction: 'redeploy' ], map.tags, getOrder(map))
 		executionChain.addCommand(command)
 	}
 	
-	def void bounce(Map map) {
+	def void bounce(Map map = [tags: []]) {
 		def Command command = new ExecutionCommand([ planAction: 'bounce' ], map.tags, getOrder(map))
 		executionChain.addCommand(command)
 	}
 	
-	def void undeploy(Map map) {
+	def void undeploy(Map map = [tags: []]) {
 		def Command command = new ExecutionCommand([ planAction: 'undeploy' ], map.tags, getOrder(map))
 		executionChain.addCommand(command)
 	}
