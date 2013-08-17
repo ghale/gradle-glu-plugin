@@ -65,6 +65,30 @@ class FabricTest {
 		assert _fabric.merge(newMap) == ['fabric': 'newFabricName', agentTags: [ 'test': [ 'tag1', 'tag2', 'tag3' ] ], entries: [ [ agent: 'test', mountPoint: '/tst2' ] ] ]
 	}
 	
+	@Test 
+	def void merge_mergesJsonClosure() {
+		def _fabric = new Fabric('test')
+		def map = [ 'fabric': _fabric.name, agentTags: [ 'test': [ 'tag1' ] ] ]
+		_fabric.model(map)
+		
+		def closure = {
+			'fabric' 'newFabricName'
+			agentTags (
+				'test': [ 'tag2', 'tag3' ]
+			)
+			entries (
+					[
+						[
+							agent: 'test',
+							mountPoint: '/tst2'
+						]
+					]
+				)
+		}
+		
+		assert _fabric.merge(closure) == ['fabric': 'newFabricName', agentTags: [ 'test': [ 'tag1', 'tag2', 'tag3' ] ], entries: [ [ agent: 'test', mountPoint: '/tst2' ] ] ]
+	}
+	
 	@Test
 	def void generate_generatesJson() {
 		def _fabric = new Fabric('test')

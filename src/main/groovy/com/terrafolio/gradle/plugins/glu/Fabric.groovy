@@ -47,28 +47,14 @@ class Fabric {
 		model(map)
 	}
 	
-	def merge(Map jsonMap) {
-		return mergeMaps(model, jsonMap)
+	def merge(Closure jsonClosure) {
+		def builder = new JsonBuilder()
+		def map = builder jsonClosure
+		merge(map)
 	}
 	
-	def mergeMaps(Map map1, Map map2) {
-		def newMap = [:]
-		[ map1, map2 ].each { map ->
-			map.each { key, value ->
-				if (! newMap.containsKey(key)) {
-					newMap[key] = value
-				} else { 
-					if (value instanceof List) {
-						newMap[key] += value
-					} else if (value instanceof Map) {
-						newMap[key] = mergeMaps(newMap[key], value)
-					} else {
-						newMap[key] = value
-					}
-				}
-			}
-		}
-		return newMap
+	def merge(Map jsonMap) {
+		return MapUtil.mergeMaps(model, jsonMap)
 	}
 	
 	def generate() {

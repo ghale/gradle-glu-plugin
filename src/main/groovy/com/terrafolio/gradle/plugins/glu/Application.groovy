@@ -1,10 +1,16 @@
 package com.terrafolio.gradle.plugins.glu
 
+import com.sun.tools.internal.jxc.apt.Options;
+
 class Application {
 	def name
 	def mountPoint
 	def script
 	def tags
+	def initParameters
+	def metadata
+	def entryState
+	def parent
 	
 	Application(String name) {
 		this.name = name
@@ -22,19 +28,45 @@ class Application {
 		this.tags = tags
 	}
 	
+	def metadata(Map metadata) {
+		this.metadata = metadata
+	}
+	
+	def entryState(String entryState) {
+		this.entryState = entryState
+	}
+	
+	def parent(String parent) {
+		this.parent = parent
+	}
+	
+	def initParameters(Map initParameters) {
+		this.initParameters = initParameters
+	}
+	
 	def generate(Map options) {
 		return [
 					entries: options.agents.collect { agent, genTags ->
-						[
-							'agent': agent,
-							'mountPoint': mountPoint,
-							'script': script,
-							'tags': mergeTags([ genTags, options.tags, tags ]),
-							'initParameters': options.initParameters
+						def entryMap = 
+							[
+								'agent': agent,
+								'script': script
 							]
+							
+						entryMap.mountPoint = options.containsKey("mountPoint") ? options.mountPoint : mountPoint
+						entryMap.tags = mergeTags([ genTags, options.tags, tags ])
+						entryMap.initParameters = MapUtil.mergeMaps(initParameters, options.initParameters)
+						entryMap.metadata = MapUtil.mergeMaps(metadata, options.metadata)
+						
+						def String _parent = options.containsKey("parent") ? options.parent : parent
+						if (_parent != null) { entryMap.parent = _parent }
+						
+						def String _entryState = options.containsKey("entryState") ? options.entryState : entryState
+						if (_entryState != null) { entryMap.entryState = _entryState }
+						
+						return entryMap	
 					}	
 				]
-				
 	}
 	
 	def mergeTags(List tagsList) {
