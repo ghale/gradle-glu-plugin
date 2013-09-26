@@ -249,4 +249,28 @@ class ApplicationTest {
 									]
 							
 	}
+
+    @Test
+    def void generate_appliesJsonClosure() {
+        def app = new Application('test')
+        app.mountPoint = '/tst'
+        app.script = 'somescript'
+        app.tags = ['tag1', 'tag2']
+
+        assert app.generate {
+                agents(atltstaxi01: 'step001')
+                tags('tst')
+        } == [
+            entries: [
+                [
+                    agent: 'atltstaxi01',
+                    mountPoint: '/tst',
+                    script: 'somescript',
+                    tags: [ 'step001', 'tst', 'tag1', 'tag2' ],
+                    initParameters: [:],
+                    metadata: [:],
+                ]
+            ]
+        ]
+    }
 }
