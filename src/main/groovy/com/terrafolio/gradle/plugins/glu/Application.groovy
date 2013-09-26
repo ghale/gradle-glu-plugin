@@ -1,5 +1,7 @@
 package com.terrafolio.gradle.plugins.glu
 
+import groovy.json.JsonBuilder
+
 import com.sun.tools.internal.jxc.apt.Options;
 
 class Application {
@@ -68,6 +70,12 @@ class Application {
 					}	
 				]
 	}
+
+    def generate(Closure jsonClosure) {
+        def builder = new JsonBuilder()
+        def map = builder jsonClosure
+        return generate(map)
+    }
 	
 	def mergeTags(List tagsList) {
 		def allTags = []
