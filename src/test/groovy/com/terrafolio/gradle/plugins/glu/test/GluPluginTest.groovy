@@ -55,7 +55,9 @@ class GluPluginTest {
 		
 		[ 'start', 'stop', 'deploy', 'redeploy', 'undeploy', 'bounce', 'loadModel' ].each { action ->
 			[ 'test1', 'test2'].each { fabric ->
-				assert project.tasks.findByName("${action}${fabric.capitalize()}")
+				def task = project.tasks.findByName("${action}${fabric.capitalize()}")
+                assert task
+                assert task.fabric
 			}
 		}
 	}

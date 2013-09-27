@@ -20,13 +20,19 @@ class GluPlugin implements Plugin<Project> {
 	}
 	
 	def void applyRules(Project project) {
+        def findFabric = { fabricName ->
+            project.glu.fabrics.find { f -> 
+                f.name == fabricName || f.name.capitalize() == fabricName 
+            }
+        }
+
         [ 'start', 'stop', 'deploy', 'redeploy', 'undeploy', 'bounce' ].each { action ->
             project.tasks.addRule "Pattern: ${action}<Fabric>", { taskName ->
-                if (taskName.startsWith(action)) {
-                    def fabricName = taskName - action
+                def fabricName = taskName - action
 
+                if (taskName.startsWith(action)) {
                     project.task("${action}${fabricName.capitalize()}", type: GluExecutionTask) {
-                        fabric { project.glu.fabrics.findByName(fabricName) }
+                        fabric { findFabric(fabricName) }
                         "${action}"()
                     }
                 }
@@ -38,7 +44,7 @@ class GluPlugin implements Plugin<Project> {
                 def fabricName = taskName - 'loadModel'
 
                 project.task("loadModel${fabricName.capitalize()}", type: GluLoadModelTask) {
-                    fabric { project.glu.fabrics.findByName(fabricName) }
+                    fabric { findFabric(fabricName) }
                 }
             }
         }
