@@ -59,4 +59,26 @@ class GluPluginTest {
 			}
 		}
 	}
+
+    @Test
+    def void apply_doesntCreateExtraTasks() {
+		project.glu {
+            servers {
+                test {}
+            }
+
+			fabrics {
+				test1 { 
+                    server = servers.test
+                }
+			}
+		}
+		
+		[ 'start', 'stop', 'deploy', 'redeploy', 'undeploy', 'bounce', 'loadModel' ].each { action ->
+            def extraTasks = project.tasks.find { task ->
+                task.name.startsWith(action) && !task.name.endsWith('Test1')
+            }
+            assert !extraTasks
+		}
+	}
 }
