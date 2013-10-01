@@ -47,9 +47,13 @@ class GluPluginTest {
 	@Test
 	def void apply_autoconfiguresTasks() {
 		project.glu {
+            servers {
+                test {}
+            }
+
 			fabrics {
-				test1 { }
-				test2 { }
+				test1 { server = servers.test }
+				test2 { server = servers.test }
 			}
 		}
 		
@@ -57,7 +61,7 @@ class GluPluginTest {
 			[ 'test1', 'test2'].each { fabric ->
 				def task = project.tasks.findByName("${action}${fabric.capitalize()}")
                 assert task
-                assert task.fabric
+                assert task.service
 			}
 		}
 	}
