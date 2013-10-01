@@ -47,16 +47,44 @@ class GluPluginTest {
 	@Test
 	def void apply_autoconfiguresTasks() {
 		project.glu {
+            servers {
+                test {}
+            }
+
 			fabrics {
-				test1 { }
-				test2 { }
+				test1 { server = servers.test }
+				test2 { server = servers.test }
 			}
 		}
 		
 		[ 'start', 'stop', 'deploy', 'redeploy', 'undeploy', 'bounce', 'loadModel' ].each { action ->
 			[ 'test1', 'test2'].each { fabric ->
-				assert project.tasks.findByName("${action}${fabric.capitalize()}")
+				def task = project.tasks.findByName("${action}${fabric.capitalize()}")
+                assert task
+                assert task.service
 			}
+		}
+	}
+
+    @Test
+    def void apply_doesntCreateExtraTasks() {
+		project.glu {
+            servers {
+                test {}
+            }
+
+			fabrics {
+				test1 { 
+                    server = servers.test
+                }
+			}
+		}
+		
+		[ 'start', 'stop', 'deploy', 'redeploy', 'undeploy', 'bounce', 'loadModel' ].each { action ->
+            def extraTasks = project.tasks.find { task ->
+                task.name.startsWith(action) && !task.name.endsWith('Test1')
+            }
+            assert !extraTasks
 		}
 	}
 }
