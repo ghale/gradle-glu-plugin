@@ -7,6 +7,7 @@ abstract class GluAbstractTask extends DefaultTask {
 	def fabric
 	
 	def GluService getService() {
+        def fabric = getFabric()
 		return new GluRESTServiceImpl(fabric.server.url + "/rest/v1/${fabric.name}/", fabric.server.username, fabric.server.password)
 	}
 	
