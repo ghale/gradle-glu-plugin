@@ -73,6 +73,18 @@ class ApplicationTest {
 									]
 							
 	}
+
+    @Test
+    def void generate_overridesScript() {
+        def app = new Application('test')
+        app.script = 'somescript'
+        app.tags = []
+
+        def options = app.generate(agents: ['agent': []],
+                                   tags: ['tag'],
+                                   script: 'newscript')
+        assert options.entries[0].script == 'newscript'
+    }
 	
 	@Test
 	def void generate_addsToInitParameters() {

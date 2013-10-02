@@ -52,9 +52,9 @@ class Application {
 						def entryMap = 
 							[
 								'agent': agent,
-								'script': script
 							]
 							
+                        entryMap.script = options.containsKey('script') ? options.script : script
 						entryMap.mountPoint = options.containsKey("mountPoint") ? options.mountPoint : mountPoint
 						entryMap.tags = mergeTags([ genTags, options.tags, tags ])
 						entryMap.initParameters = MapUtil.mergeMaps(initParameters, options.initParameters)
