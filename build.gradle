@@ -47,8 +47,13 @@ signing {
 	sign configurations.archives
 }
 
-def sonatypeUsername = ''
-def sonatypePassword = ''
+if (! project.hasProperty('sonatypeUsername')) {
+	ext.sonatypeUsername = ''
+}
+
+if (! project.hasProperty('sonatypePassword')) {
+	ext.sonatypePassword = ''
+}
 
 uploadArchives {
 	repositories {
