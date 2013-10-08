@@ -2,8 +2,6 @@ package com.terrafolio.gradle.plugins.glu
 
 import groovy.json.JsonBuilder
 
-import com.sun.tools.internal.jxc.apt.Options;
-
 class Application {
 	def name
 	def mountPoint
