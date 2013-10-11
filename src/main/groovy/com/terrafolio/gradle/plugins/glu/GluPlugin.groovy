@@ -30,7 +30,7 @@ class GluPlugin implements Plugin<Project> {
             project.tasks.addRule "Pattern: ${action}<Fabric>", { taskName ->
                 def fabricName = taskName - action
 
-                if (taskName.startsWith(action)) {
+                if (findFabric(fabricName) && taskName.startsWith(action)) {
                     project.task("${action}${fabricName.capitalize()}", type: GluExecutionTask) {
                         fabric { findFabric(fabricName) }
                         "${action}"()
@@ -43,8 +43,10 @@ class GluPlugin implements Plugin<Project> {
             if (taskName.startsWith('loadModel')) {
                 def fabricName = taskName - 'loadModel'
 
-                project.task("loadModel${fabricName.capitalize()}", type: GluLoadModelTask) {
-                    fabric { findFabric(fabricName) }
+                if (findFabric(fabricName)) {
+                    project.task("loadModel${fabricName.capitalize()}", type: GluLoadModelTask) {
+                        fabric { findFabric(fabricName) }
+                    }
                 }
             }
         }
