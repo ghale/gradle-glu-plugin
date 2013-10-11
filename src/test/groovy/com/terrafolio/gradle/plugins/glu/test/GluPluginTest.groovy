@@ -85,6 +85,7 @@ class GluPluginTest {
                 task.name.startsWith(action) && !task.name.endsWith('Test1')
             }
             assert !extraTasks
+            assert !project.tasks.findByName("${action}BadFabric")
 		}
 	}
 }
