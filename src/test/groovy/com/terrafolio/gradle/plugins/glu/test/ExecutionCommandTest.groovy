@@ -346,7 +346,8 @@ Deploy - Fabric [glu-dev-1] - PARALLEL: COMPLETED in 19s
 			command.pollInterval = 10
 			
 			def pollingCount = 0
-			context.put(Constants.POLLING_ACTION, {
+			context.put(Constants.POLLING_ACTION, { _executionId, _context ->
+				assert _executionId == '9'
 				pollingCount++
 			})
 			assert ! command.execute(context)
@@ -449,7 +450,8 @@ Deploy - Fabric [glu-dev-1] - PARALLEL: COMPLETED in 19s
 			command.pollInterval = 10
 			
 			def calledCompleteAction = false
-			context.put(Constants.COMPLETE_ACTION, {
+			context.put(Constants.COMPLETE_ACTION, { _executionId, _context ->
+				assert _executionId == '9'
 				calledCompleteAction = true
 			})
 			assert ! command.execute(context)

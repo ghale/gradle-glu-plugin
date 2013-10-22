@@ -11,13 +11,13 @@ class ExecutionCommand implements Command {
 	def order
 	def pollInterval = 5000
 	
-	def deploymentPollingAction = { Context context ->
+	def deploymentPollingAction = { String executionId, Context context ->
 		def logger = context.get(Constants.LOGGER)
 		def deploymentStatus = context.get(Constants.POLLING_STATUS)
 		logger.warn("${deploymentStatus.completedSteps} of ${deploymentStatus.totalSteps} steps completed...")
 	}
 	
-	def deploymentCompleteAction = { Context context ->
+	def deploymentCompleteAction = { String executionId, Context context ->
 		def logger = context.get(Constants.LOGGER)
 		def executionDocument = context.get(Constants.STATUS)
 		logStatus(logger, executionDocument)
@@ -61,7 +61,7 @@ class ExecutionCommand implements Command {
 			deploymentStatus = service.getDeploymentStatus(fabricName, executionId)
 			if (deploymentStatus.completedSteps != lastCompleted) {
 				context.put(Constants.POLLING_STATUS, deploymentStatus)
-				deploymentPollingAction.call(context)
+				deploymentPollingAction.call(executionId, context)
 				lastCompleted = deploymentStatus.completedSteps
 			}
 			
@@ -75,7 +75,7 @@ class ExecutionCommand implements Command {
 		def executionDocument = service.getExecutionStatus(fabricName, planId, executionId)
 		context.put(Constants.STATUS, executionDocument)
 		
-		deploymentCompleteAction.call(context)
+		deploymentCompleteAction.call(executionId, context)
 		
 		if (deploymentStatus.status == Constants.STATUS_COMPLETED) { 
 			return Constants.SUCCESS

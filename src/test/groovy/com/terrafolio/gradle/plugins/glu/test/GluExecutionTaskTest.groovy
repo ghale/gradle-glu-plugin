@@ -730,7 +730,6 @@ class GluExecutionTaskTest {
 		}
 		
 		mockChainFactory.use {
-			def testExecutionTime = 11111
 			project.task('bounceTest1', type: GluExecutionTask) {
 				fabric project.glu.fabrics.test
 				
