@@ -12,6 +12,8 @@ class GluExecutionTask extends GluAbstractTask {
 	def order = 'parallel'
 	def executionTime = 0
 	def Chain executionChain = ExecutionChainFactory.getExecutionChain()
+	def customDeploymentPollingAction = null
+	def customDeploymentCompleteAction = null
 	
 	@Override
 	def void doExecute() {
@@ -20,6 +22,14 @@ class GluExecutionTask extends GluAbstractTask {
 		context.put(Constants.FABRIC, fabric.name)
 		context.put(Constants.LOGGER, project.logger)
 		context.put(Constants.CONSOLE_URL, fabric.server.url)
+		
+		if (customDeploymentPollingAction) {
+			context.put(Constants.POLLING_ACTION, customDeploymentPollingAction)
+		}
+		
+		if (customDeploymentCompleteAction) {
+			context.put(Constants.COMPLETE_ACTION, customDeploymentCompleteAction)
+		}
 		
 		if (executionTime > 0) {
 			sleepUntil(executionTime)
@@ -72,5 +82,13 @@ class GluExecutionTask extends GluAbstractTask {
 	def void undeploy(Map map = [tags: []]) {
 		def Command command = new ExecutionCommand([ planAction: 'undeploy' ], map.tags, getOrder(map))
 		executionChain.addCommand(command)
+	}
+	
+	def void withDeploymentPollingAction(Closure closure) {
+		customDeploymentPollingAction = closure
+	}
+	
+	def void withDeploymentCompleteAction(Closure closure) {
+		customDeploymentCompleteAction = closure
 	}
 }

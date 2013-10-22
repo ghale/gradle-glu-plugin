@@ -670,4 +670,76 @@ class GluExecutionTaskTest {
 			assert project.ext.called
 		}
 	}
+	
+	@Test
+	def void execute_callsExecutionWithDeploymentPollingAction() {
+		def customPollingAction = { }
+		mockChainFactory.demand.with {
+			getExecutionChain() {
+				return new Chain() {
+					def commands = []
+					
+					@Override
+					public void addCommand(Command command) {
+						commands += command
+					}
+					
+					@Override
+					public boolean execute(Context context) throws Exception {
+						assert context.get(Constants.POLLING_ACTION) == customPollingAction
+						return Constants.SUCCESS
+					}
+				}
+			}
+		}
+		
+		mockChainFactory.use {
+			def testExecutionTime = 11111
+			project.task('bounceTest1', type: GluExecutionTask) {
+				fabric project.glu.fabrics.test
+				
+				bounce(tags: [ 'step001' ], order: 'sequential')
+				
+				withDeploymentPollingAction customPollingAction
+			}
+			
+			project.tasks.bounceTest1.execute()
+		}
+	}
+	
+	@Test
+	def void execute_callsExecutionWithDeploymentCompleteAction() {
+		def customCompleteAction = { }
+		mockChainFactory.demand.with {
+			getExecutionChain() {
+				return new Chain() {
+					def commands = []
+					
+					@Override
+					public void addCommand(Command command) {
+						commands += command
+					}
+					
+					@Override
+					public boolean execute(Context context) throws Exception {
+						assert context.get(Constants.COMPLETE_ACTION) == customCompleteAction
+						return Constants.SUCCESS
+					}
+				}
+			}
+		}
+		
+		mockChainFactory.use {
+			def testExecutionTime = 11111
+			project.task('bounceTest1', type: GluExecutionTask) {
+				fabric project.glu.fabrics.test
+				
+				bounce(tags: [ 'step001' ], order: 'sequential')
+				
+				withDeploymentCompleteAction customCompleteAction
+			}
+			
+			project.tasks.bounceTest1.execute()
+		}
+	}
 }

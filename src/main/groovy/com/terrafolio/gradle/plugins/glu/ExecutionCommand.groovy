@@ -10,6 +10,18 @@ class ExecutionCommand implements Command {
 	def tags
 	def order
 	def pollInterval = 5000
+	
+	def deploymentPollingAction = { Context context ->
+		def logger = context.get(Constants.LOGGER)
+		def deploymentStatus = context.get(Constants.POLLING_STATUS)
+		logger.warn("${deploymentStatus.completedSteps} of ${deploymentStatus.totalSteps} steps completed...")
+	}
+	
+	def deploymentCompleteAction = { Context context ->
+		def logger = context.get(Constants.LOGGER)
+		def executionDocument = context.get(Constants.STATUS)
+		logStatus(logger, executionDocument)
+	}
 
 	public ExecutionCommand(Map action, List tags, order) {
 		this.action = action
@@ -23,6 +35,14 @@ class ExecutionCommand implements Command {
 		def fabricName = context.get(Constants.FABRIC)
 		def logger = context.get(Constants.LOGGER)
 		def console_url = context.get(Constants.CONSOLE_URL)
+		
+		if (context.containsKey(Constants.POLLING_ACTION)) {
+			deploymentPollingAction = context.get(Constants.POLLING_ACTION)
+		}
+		
+		if (context.containsKey(Constants.COMPLETE_ACTION)) {
+			deploymentCompleteAction = context.get(Constants.COMPLETE_ACTION)
+		}
 		
 		logger.warn("Creating plan for ${fabricName} with tags=${tags}, action=${action}, and order=${order}")
 		def planId = service.createPlan(fabricName, tags, action, order)
@@ -40,7 +60,8 @@ class ExecutionCommand implements Command {
 		while (true) {
 			deploymentStatus = service.getDeploymentStatus(fabricName, executionId)
 			if (deploymentStatus.completedSteps != lastCompleted) {
-				logger.warn("${deploymentStatus.completedSteps} of ${deploymentStatus.totalSteps} steps completed...")
+				context.put(Constants.POLLING_STATUS, deploymentStatus)
+				deploymentPollingAction.call(context)
 				lastCompleted = deploymentStatus.completedSteps
 			}
 			
@@ -51,11 +72,11 @@ class ExecutionCommand implements Command {
 			}
 		}
 		
-		
 		def executionDocument = service.getExecutionStatus(fabricName, planId, executionId)
 		context.put(Constants.STATUS, executionDocument)
 		
-		logStatus(logger, executionDocument)
+		deploymentCompleteAction.call(context)
+		
 		if (deploymentStatus.status == Constants.STATUS_COMPLETED) { 
 			return Constants.SUCCESS
 		} else {
