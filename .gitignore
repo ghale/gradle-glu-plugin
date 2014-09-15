@@ -9,3 +9,7 @@ bin
 
 *.swp
 prototype.gradle
+*.iml
+*.ipr
+classes
+.idea

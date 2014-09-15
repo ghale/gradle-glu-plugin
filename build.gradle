@@ -1,8 +1,9 @@
-apply plugin: 'groovy'
-
-apply plugin: 'eclipse'
-apply plugin: 'maven'
-apply plugin: 'signing'
+plugins {
+    id "groovy"
+    id "eclipse"
+    id "idea"
+    id "nu.studer.plugindev" version "1.0.0"
+}
 
 group = 'com.terrafolio'
 
@@ -22,76 +23,23 @@ dependencies {
    testCompile 'xmlunit:xmlunit:1.3'
 }
 
-task wrapper(type: Wrapper) {
-	gradleVersion = '1.3'
+plugindev {
+    pluginId = 'com.terrafolio.glu'
+    pluginImplementationClass 'com.terrafolio.gradle.plugins.glu.GluPlugin'
+    pluginDescription 'Gradle plugin for programatically configuring the Glu automated deployment platform.'
+    pluginLicenses 'Apache-2.0'
+    pluginTags 'gradle', 'plugin', 'glu'
+    authorId 'ghale'
+    authorName 'Gary Hale'
+    authorEmail 'ghhale@computer.org'
+    projectUrl 'https://github.com/ghale/gradle-glu-plugin'
+    projectInceptionYear '2013'
+    done() 
 }
 
-task groovydocJar(type: Jar, dependsOn: groovydoc) {
-  description = 'An archive of the GroovyDocs for Maven Central'
-  classifier = 'javadoc'
-  from groovydoc
-}
- 
-task sourcesJar(type: Jar) {
-	from sourceSets.main.allSource
-	classifier = 'sources'
-}
-
-artifacts {
-	archives jar
-	archives groovydocJar
-	archives sourcesJar
-}
-
-signing {
-	sign configurations.archives
-}
-
-if (! project.hasProperty('sonatypeUsername')) {
-	ext.sonatypeUsername = ''
-}
-
-if (! project.hasProperty('sonatypePassword')) {
-	ext.sonatypePassword = ''
-}
-
-uploadArchives {
-	repositories {
-		mavenDeployer {
-			beforeDeployment { MavenDeployment deployment -> signPom(deployment) }
- 
-			repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2") {
-			  authentication(userName: sonatypeUsername, password: sonatypePassword)
-			}
- 
-			pom.project {
-			   name 'gradle-glu-plugin'
-			   packaging 'jar'
-			   description 'This is a gradle plugin for managing deployemnts through glu.'
-			   url 'https://github.com/ghale/gradle-glu-plugin'
- 
-			   scm {
-				   url 'https://github.com/ghale/gradle-glu-plugin.git'
-				   connection 'scm:https://github.com/ghale/gradle-glu-plugin.git'
-				   developerConnection 'scm:git@github.com/ghale/gradle-glu-plugin.git'
-			   }
- 
-			   licenses {
-				   license {
-					   name 'The Apache Software License, Version 2.0'
-					   url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-					   distribution 'repo'
-				   }
-			   }
- 
-			   developers {
-				   developer {
-					   id 'ghale'
-					   name 'Gary Hale'
-					   email 'ghhale@computer.org'
-				   }
-			   }
-		   }
-		}
-	}
+// make sure to define the bintray properties after the 'plugindev' extension
+bintray {
+    user = "${bintrayUsername}"
+    key = "${bintrayApiKey}"
+    pkg.repo = 'gradle-plugins'
 }
